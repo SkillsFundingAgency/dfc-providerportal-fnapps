@@ -1,0 +1,28 @@
+# Azure DevOps build pipeline
+
+resources:
+  repositories:
+  - repository: self
+
+trigger:
+  batch: true
+  branches:
+    include:
+    - master
+
+pr:
+  branches:
+    include:
+    - master
+
+steps:
+- task: CopyFiles@2
+  displayName: 'Copy Resources'
+  inputs:
+      sourceFolder: 'Resources'
+      contents: '**/*'
+      targetFolder: '$(build.artifactstagingdirectory)/Resources'
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact'
+  inputs:
+      pathtoPublish: $(build.artifactstagingdirectory)

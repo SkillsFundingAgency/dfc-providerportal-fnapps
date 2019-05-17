@@ -1,0 +1,61 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "projectPrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "Prefix for all resources created for the project (except storage account, see below). Should be in the format dfc-env-proj"
+            }
+        },
+        "appServicePlanSize": {
+            "type": "string",
+            "defaultValue": "1",
+            "metadata": {
+                "description": "Size of the instances in the app service plan"
+            },
+            "allowedValues": [
+              "1",
+              "2",
+              "3"
+            ]
+          },
+          "appServicePlanInstances": {
+            "type": "int",
+            "defaultValue": 1,
+            "metadata": {
+                "description": "Number of instances in the app service plan"
+            }
+        }      
+    },
+    "variables": {
+        "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/ArmTemplates/",
+        "appServicePlanName": "[concat(parameters('projectPrefix'),'-asp')]"
+    },
+    "resources": [
+        {
+            "apiVersion": "2017-05-10",
+            "name": "courseDirectoryAppServicePlan",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'app-service-plan.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appServicePlanName": {
+                        "value": "[variables('appServicePlanName')]"
+                    },
+                    "aspSize": {
+                        "value": "[parameters('appServicePlanSize')]"
+                    },
+                    "aspInstances": {
+                        "value": "[parameters('appServicePlanInstances')]"
+                    }
+                }
+            }
+        }
+    ]
+}
+      
